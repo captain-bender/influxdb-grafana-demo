@@ -10,6 +10,14 @@ cd influxdb-grafana-demo
 ```
 
 2. Start the Stack
+Make sure that you are inside the project's folder
+e.g.
+```
+cd C:\Users\<your-name>\OneDrive\Documents
+cd influx-grafana-demo
+```
+
+and then
 ```
 docker compose up -d
 ```
@@ -25,6 +33,8 @@ docker compose up -d
 - **Grafana UI:** [http://localhost:3000](http://localhost:3000)
   - Username: `admin`
   - Password: `admin`
+  
+  [if it suggests to change password, you can skip it]
 
 
 ## How to Connect Grafana to InfluxDB

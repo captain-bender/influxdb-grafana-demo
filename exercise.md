@@ -14,9 +14,9 @@ Confirm that both InfluxDB and Grafana are running (e.g., via Docker Compose).
 2. Confirm Data Availability in InfluxDB
     - Log in to InfluxDB.
 
-    - Go to Explore and check that the airSensors measurement exists in your bucket (e.g., example-bucket).
+    - Go to Data Explore and check that the airSensors measurement exists in your bucket (e.g., example-bucket).
 
-    - Use the Script Editor to run:
+    - Use the Script Editor to run (copy and press the Submit button):
         ```
         from(bucket: "demo-bucket")
         |> range(start: -7d)
@@ -26,7 +26,7 @@ Confirm that both InfluxDB and Grafana are running (e.g., via Docker Compose).
     - If you see data, you’re ready to proceed.
 
 3. Connect Grafana to InfluxDB
-In Grafana, go to Configuration > Data Sources > Add data source.
+In Grafana, go to Connections > Data Sources > Add data source.
 
     - Choose InfluxDB.
 
@@ -54,7 +54,7 @@ In Grafana, go to Configuration > Data Sources > Add data source.
 
     - Use the Flux query editor and paste:
         ```
-        from(bucket: "example-bucket")
+        from(bucket: "demo-bucket")
         |> range(start: -7d)
         |> filter(fn: (r) => r._measurement == "airSensors")
         |> filter(fn: (r) => r._field == "temperature")
@@ -91,7 +91,7 @@ In Grafana, go to Configuration > Data Sources > Add data source.
 Sample Queries for Grafana
 Average Humidity per Hour:
 ```
-from(bucket: "example-bucket")
+from(bucket: "demo-bucket")
   |> range(start: -7d)
   |> filter(fn: (r) => r._measurement == "airSensors")
   |> filter(fn: (r) => r._field == "humidity")
@@ -100,7 +100,7 @@ from(bucket: "example-bucket")
 ```
 Compare Temperature by Sensor:
 ```
-from(bucket: "example-bucket")
+from(bucket: "demo-bucket")
   |> range(start: -7d)
   |> filter(fn: (r) => r._measurement == "airSensors")
   |> filter(fn: (r) => r._field == "temperature")
