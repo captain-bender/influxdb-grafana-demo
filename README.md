@@ -93,13 +93,13 @@ After connecting your InfluxDB data source in Grafana:
     |> limit(n: 100)
     ```
 
-  - Hourly average (small aggregation): a simpler version of your original query
-  ```
-  from(bucket: "example-bucket")
+   - Hourly average (small aggregation): a simpler version of your original query
+   ```
+   from(bucket: "example-bucket")
     |> range(start: -30d)
     |> filter(fn: (r) => r._measurement == "airSensors" and r._field == "temperature")
     |> aggregateWindow(every: 1h, fn: mean)
-  ```
+   ```
 
 ## Stopping and cleaning (start from scratch)
 
