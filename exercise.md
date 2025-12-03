@@ -18,7 +18,7 @@ Confirm that both InfluxDB and Grafana are running (e.g., via Docker Compose).
 
     - Use the Script Editor to run (copy and press the Submit button):
         ```
-        from(bucket: "demo-bucket")
+        from(bucket: "example-bucket")
         |> range(start: -7d)
         |> filter(fn: (r) => r._measurement == "airSensors")
         |> filter(fn: (r) => r._field == "temperature")
@@ -54,7 +54,7 @@ In Grafana, go to Connections > Data Sources > Add data source.
 
     - Use the Flux query editor and paste:
         ```
-        from(bucket: "demo-bucket")
+        from(bucket: "example-bucket")
         |> range(start: -7d)
         |> filter(fn: (r) => r._measurement == "airSensors")
         |> filter(fn: (r) => r._field == "temperature")
@@ -82,25 +82,22 @@ In Grafana, go to Connections > Data Sources > Add data source.
 8. Save and Present
     - Save your dashboard.
 
-    - Prepare 1–2 slides or a short demo:
-
-        - Slide 1: Your query and a screenshot of your Grafana panel.
-
-        - Slide 2: Briefly explain what the visualization shows (e.g., trends, anomalies, sensor comparisons).
 
 Sample Queries for Grafana
+
 Average Humidity per Hour:
 ```
-from(bucket: "demo-bucket")
+from(bucket: "example-bucket")
   |> range(start: -7d)
   |> filter(fn: (r) => r._measurement == "airSensors")
   |> filter(fn: (r) => r._field == "humidity")
   |> aggregateWindow(every: 1h, fn: mean)
   |> yield()
 ```
+
 Compare Temperature by Sensor:
 ```
-from(bucket: "demo-bucket")
+from(bucket: "example-bucket")
   |> range(start: -7d)
   |> filter(fn: (r) => r._measurement == "airSensors")
   |> filter(fn: (r) => r._field == "temperature")
