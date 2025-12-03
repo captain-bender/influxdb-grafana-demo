@@ -29,6 +29,22 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
 
+  data-loader:
+    build:
+      context: .
+      dockerfile: loader/Dockerfile
+    container_name: data-loader
+    # do not restart automatically; this service runs once to load data
+    restart: "no"
+    depends_on:
+      - influxdb
+    environment:
+      - INFLUX_URL=http://influxdb:8086
+      - INFLUX_USERNAME=admin
+      - INFLUX_PASSWORD=adminpassword
+      - INFLUX_ORG=example-org
+      - INFLUX_BUCKET=example-bucket
+
 volumes:
   influxdb_data:
   grafana_data:
