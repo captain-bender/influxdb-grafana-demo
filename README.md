@@ -22,7 +22,9 @@ and then
 docker compose up -d
 ```
 
-3. Access the Services
+when your teminal dispays something like "grafana      | logger=infra.usagestats t=2025-12-03T15:32:55.778649174Z level=info msg="Usage stats are ready to report", feel free to continue.
+
+3. Services Details
 
 - **InfluxDB UI:** [http://localhost:8086](http://localhost:8086)
   - Username: `admin`
@@ -34,26 +36,22 @@ docker compose up -d
   - Username: `admin`
   - Password: `admin`
   
-  [if it suggests to change password, you can skip it]
+  [if Grafana WebUI suggests to change password, you can skip it]
 
 
 ## How to Connect Grafana to InfluxDB
 
 1. Log in to Grafana at [http://localhost:3000](http://localhost:3000).
-2. Go to **Configuration > Data Sources > Add data source**.
-3. Select **InfluxDB**.
+2. Go to **Connections > Add new connection**.
+3. Select **InfluxDB > Add new data source**.
 4. Set:
    - **URL:** `http://influxdb:8086`
    - **Query Language:** Flux
+   - **Auth:** Basic auth
    - **Organization:** `example-org`
    - **Token:** `admintoken123`
    - **Default Bucket:** `example-bucket`
 5. Click **Save & Test**. You should see a success message.
-
-
-### Load Sample Data
-
-- Use the InfluxDB UI to load the air sensor sample dataset as described in the exercises.
 
 
 ## Visualizing Data in Grafana
@@ -67,40 +65,60 @@ After connecting your InfluxDB data source in Grafana:
    - Paste the following sample query (adjust the bucket name if needed):
 
      ```
-     from(bucket: "demo-bucket")
+     from(bucket: "example-bucket")
        |> range(start: -30d)
        |> filter(fn: (r) => r._measurement == "airSensors")
        |> filter(fn: (r) => r._field == "temperature")
        |> aggregateWindow(every: 1h, fn: mean)
        |> yield()
      ```
+   - Then click to "Query Inspector" button
+   - Then click the "Refresh" button, and close the pop-up window.
    - You should see a line graph with temperature data if the sample data is loaded.
 
-3. **If you see "No data":**
-   - Check and expand the time range in the top right (e.g., "Last 30 days" or "All time").
-   - Confirm your bucket and field names match your InfluxDB setup.
-   - Try other fields such as `co` or `humidity`.
+3. More **simple examples:**
 
+   - Raw recent points (quick check): shows any data in the bucket for the last hour.
+   ```
+   from(bucket: "example-bucket")
+    |> range(start: -1h)
+    |> limit(n: 50)
+    ```
 
-## Stopping the Stack
+   - Temperature points (raw): narrow to the measurement + field (no aggregation).
+   ```
+   from(bucket: "example-bucket")
+    |> range(start: -24h)
+    |> filter(fn: (r) => r._measurement == "airSensors" and r._field == "temperature")
+    |> limit(n: 100)
+    ```
+
+  - Hourly average (small aggregation): a simpler version of your original query
+  ```
+  from(bucket: "example-bucket")
+    |> range(start: -30d)
+    |> filter(fn: (r) => r._measurement == "airSensors" and r._field == "temperature")
+    |> aggregateWindow(every: 1h, fn: mean)
+  ```
+
+## Stopping and cleaning (start from scratch)
+
+If you want to stop the stack and remove all containers, images and data so the next `up` starts from a fresh state, follow the commands below.
+
+- Using Docker Compose: this stops services, removes containers, networks, images that were built by Compose, and deletes named volumes created by the compose file. WARNING: deleting volumes will permanently remove the database contents.
+
+In order to stop the execution, please press CTRL+C, and then
+
+```powershell
+cd C:\Users\<your path>\Documents\mysql-docker-demo
+docker compose down --rmi all -v --remove-orphans
 ```
-docker compose down
-```
+
+- What the flags do:
+	- `--rmi all`: removes images built by Compose (your `classicmodels-mysql` image created by `build`).
+	- `-v`: removes named volumes declared in `docker-compose.yml` (this deletes DB data).
+	- `--remove-orphans`: removes containers from previous runs that are not defined in this compose file.
 
 ## Notes
 
 - All data is persisted in Docker volumes (`influxdb_data`, `grafana_data`).
-- Change default passwords/tokens for production use.
-
-## Troubleshooting
-
-| Issue                  | Solution                                                                                 |
-|------------------------|-----------------------------------------------------------------------------------------|
-| Grafana shows "No data"| Set a wider time range, check bucket/field names, and use the sample Flux query above.  |
-| InfluxDB not loading   | Ensure Docker Desktop is running and ports 8086/3000 are free.                          |
-| Container name conflict| Remove existing containers with `docker rm influxdb` or change `container_name`.        |
-
-
-
-
-
