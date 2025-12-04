@@ -5,7 +5,7 @@ This repository provides a ready-to-use Docker Compose stack for InfluxDB 2.x an
 ## Quick Start
 1. Clone the Repository
 ```
-git clone https://github.com/yourusername/influxdb-grafana-demo.git
+git clone https://github.com/captain-bender/influxdb-grafana-demo
 cd influxdb-grafana-demo
 ```
 
