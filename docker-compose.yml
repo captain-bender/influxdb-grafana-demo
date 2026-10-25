@@ -16,7 +16,8 @@ services:
       - influxdb_data:/var/lib/influxdb2
 
   grafana:
-    image: grafana/grafana:latest
+    # pinned so the UI matches the instructions for the whole term
+    image: grafana/grafana:13.2.4
     container_name: grafana
     restart: unless-stopped
     ports:
